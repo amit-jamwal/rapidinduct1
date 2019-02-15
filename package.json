@@ -1,0 +1,23 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server"
+  },
+  "author": "Amit Bhardwaj",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.401.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "googleapis": "^37.2.0",
+    "jsonwebtoken": "^8.4.0",
+    "mongoose": "^5.4.8",
+    "morgan": "^1.9.1",
+    "nodemailer": "^5.1.1"
+  }
+}
