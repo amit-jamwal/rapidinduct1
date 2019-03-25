@@ -3,12 +3,10 @@ const app = express();
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const User = require('../models/user.model');
-const checkUser = require('./controller');
+const checkUser = require('../controllers/user.controller');
 const nodeMailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
-// var AWS = require('aws-sdk');
-const { google } = require('googleapis');
 
 app.use(checkUser());
 router.post('/register', checkUser(), (req, res, next) => {
@@ -21,7 +19,7 @@ router.post('/register', checkUser(), (req, res, next) => {
     } else {
       const user = new User({
         email: req.body.email,
-        name: req.body.name,
+        // name: req.body.name,
         password: hash
       });
 
@@ -30,9 +28,7 @@ router.post('/register', checkUser(), (req, res, next) => {
         .then(result => {
           console.log(result);
           let html =
-            `<b>Hello <br>` +
-            req.body.name +
-            `, <br> Congratulations! your account is succesfully created with user name ` +
+            `<b>Hello <br>, <br> Congratulations! your account is succesfully created with user name ` +
             req.body.email +
             `. <br> Temporary Password is: ` +
             password +
@@ -151,6 +147,39 @@ router.post('/authenticate', (req, res) => {
     }
   });
 });
+
+router.post('/updateuser', (req, res) => {
+  console.log(req.body);
+
+  User.findOne({ email: req.body.email }).then(data => {
+    console.log(data);
+    if (!data) {
+      res.json({
+        success: true,
+        message: 'User not exist'
+      });
+    } else {
+      User.updateOne(
+        {
+          email: req.body.email
+        },
+        {
+          $set: {
+            firstName: req.body.firstName,
+            middleName: req.body.middleName,
+            lastName: req.body.lastName,
+            mobile: req.body.mobile
+          }
+        },
+        { upsert: false }
+      ).then(data => {
+        console.log('*****', data);
+        res.json(data);
+      });
+    }
+  });
+});
+
 module.exports = router;
 
 /**
