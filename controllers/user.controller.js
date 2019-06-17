@@ -1,6 +1,6 @@
 const User = require('../models/user.model');
 
-const checkUser = () => {
+const checkUserName = () => {
   return (req, res, next) => {
     User.findOne({ email: req.body.email })
       .then(data => {
@@ -24,4 +24,19 @@ const checkUser = () => {
   };
 };
 
-module.exports = checkUser;
+const checkUserExists = () => {
+  return (req, res, next) => {
+    User.findOne({ email: req.body.email }, (error, user) => {
+      if (error) {
+        res.json({ status: 'Fail', 'error': error });
+      }
+      if (!user) {
+        res.json({ message: 'email does not exists.', status: 'Fail', 'error': error });
+      } else {
+        next();
+      }
+    });
+  };
+};
+
+module.exports = { checkUserName, checkUserExists };

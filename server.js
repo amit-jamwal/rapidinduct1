@@ -7,8 +7,12 @@ const config = require('./config');
 const userRouter = require('./users/user.route');
 const uploadRouter = require('./training/upload-document');
 
-const PORT = process.env.PORT || 3000;
-mongoose.connect(config.database, { useNewUrlParser: true });
+const PORT = process.env.PORT || 3001;
+mongoose.connect(config.database, { useNewUrlParser: true}, (err)=>{
+  if(err){
+    console.error('ERROR:', err);
+  }
+});
 app.set('superSecret', config.secret);
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -19,7 +23,7 @@ app.use(morgan('dev'));
 app.use(function(req, res, next) {
   //set headers to allow cross origin request.
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Origin', 'http://localhost:2000');
+  res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Credentials', true);
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');

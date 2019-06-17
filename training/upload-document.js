@@ -34,6 +34,7 @@ router.get('/trainings', (req, res) => {
 });
 
 router.post('/upload', upload.single('photo'), function(req, res) {
+  console.log('df', req.body)
   Training.findOne({ trainingName: req.body.name })
     .then(data => {
       if (data) {
