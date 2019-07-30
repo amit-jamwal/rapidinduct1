@@ -7,7 +7,8 @@ const user = mongoose.Schema({
   firstName: { type: String, require: true },
   middleName: { tyoe: String },
   lastName: { type: String, require: true },
-  mobile: { type: Number, require: true }
+  mobile: { type: Number, require: true },
+  trainingId:{type:String}
 });
 
-module.exports = mongoose.model('User', user);
+module.exports = mongoose.model('Users', user);

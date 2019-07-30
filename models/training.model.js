@@ -5,7 +5,8 @@ const training = mongoose.Schema({
   description: { type: String },
   passingMarks: { type: Number, require: true },
   filePath: { type: String, require: true },
-  fileName: { type: String, require: true }
+  fileName: { type: String, require: true },
+  defaultTraining: {type: Boolean, require: true}
 });
 
 module.exports = mongoose.model('Training', training);

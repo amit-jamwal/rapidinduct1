@@ -34,7 +34,6 @@ router.get('/trainings', (req, res) => {
 });
 
 router.post('/upload', upload.single('photo'), function(req, res) {
-  console.log('df', req.body)
   Training.findOne({ trainingName: req.body.name })
     .then(data => {
       if (data) {
@@ -53,7 +52,8 @@ router.post('/upload', upload.single('photo'), function(req, res) {
           description: req.body.description,
           passingMarks: req.body.passingCriteria,
           fileName: req.file.fileName,
-          filePath: req.file.path
+          filePath: req.file.path,
+          defaultTraining: req.body.defaultTraining === 'true'
         });
 
         training

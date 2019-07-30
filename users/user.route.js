@@ -36,9 +36,8 @@ router.post('/register', checkUserName(), (req, res, next) => {
         .save()
         .then(result => {
           const htmlTemplate =
-            `<b>Hello <br>, <br> Congratulations! your account is succesfully created with user name `.concat(req.body.email)
-              `. <br> Temporary Password is: `.concat(password)
-              `
+            `<b>Hello <br>, <br> Congratulations! your account is succesfully created with user name ${req.body.email}
+              . <br> Temporary Password is: ${password}
            <br>
            Thank you <br>
           GND`;
@@ -227,7 +226,7 @@ router.post('/changepwd', checkUserExists(), (req, res) => {
             success: false
           });
         }
-        if(!result){
+        if (!result) {
           res.status(400).json({
             message: 'Old password not matched.',
             success: false
@@ -281,6 +280,37 @@ router.post('/changepwd', checkUserExists(), (req, res) => {
     }
   });
 });
+
+router.post('/assigntraining', checkUserExists(), (req, res) => {
+  console.log(req.body);
+  User.findOne({ email: req.body.email }).then(data => {
+    console.log(data);
+    if (!data) {
+      res.json({
+        success: true,
+        message: 'User not exist'
+      });
+    } else {
+      User.updateOne(
+        {
+          'email': req.body.email
+        },
+        {
+          $set: {
+            'trainingId': req.body.trainingId
+          }
+        },
+        { upsert: false, multi: false }
+      ).then(dataSet => {
+        console.log('*****', dataSet);
+        res.json(data);
+      });
+    }
+  });
+})
+
+
+
 module.exports = router;
 
 /**
