@@ -5,12 +5,13 @@ const Training = require('../models/training.model');
 const TrainingQuiz = require('../models/training-quiz.model');
 const path = require('path');
 const fs = require('fs');
+const User = require('../models/user.model');
 
 let storage = multer.diskStorage({
-  destination: function(request, file, callback) {
+  destination: function (request, file, callback) {
     callback(null, './uploads/');
   },
-  filename: function(request, file, callback) {
+  filename: function (request, file, callback) {
     console.log(file);
     callback(null, request.body.name + '-' + Date.now() + path.extname(file.originalname));
   }
@@ -33,7 +34,7 @@ router.get('/trainings', (req, res) => {
     });
 });
 
-router.post('/upload', upload.single('photo'), function(req, res) {
+router.post('/upload', upload.single('photo'), function (req, res) {
   Training.findOne({ trainingName: req.body.name })
     .then(data => {
       if (data) {
@@ -59,6 +60,18 @@ router.post('/upload', upload.single('photo'), function(req, res) {
         training
           .save()
           .then(result => {
+            console.log(result)
+            if (req.body.defaultTraining === 'true') {
+              User.updateMany(
+                { 'email': { $ne: '' } },
+                {
+                  $push: {
+                    'assignedTrainings': result._id
+                  }
+                }).then(updatedUser => {
+                  console.log(updatedUser)
+                })
+            }
             res.json({
               success: true,
               filename: req.file.originalname

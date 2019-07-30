@@ -7,6 +7,7 @@ const { checkUserName, checkUserExists } = require('../controllers/user.controll
 const nodeMailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
+const ObjectId = require('mongodb').ObjectID;
 const transporter = nodeMailer.createTransport({
   service: 'gmail',
   host: 'smtp.gmail.com',
@@ -204,9 +205,7 @@ router.post('/updateuser', (req, res) => {
 
 
 router.post('/changepwd', checkUserExists(), (req, res) => {
-  console.log('adf')
   User.findOne({ email: req.body.email }, (error1, user) => {
-    console.log('1', error1, user)
     if (error1) {
       res.json({ error: error1, status: 'Fail' });
     }
@@ -216,7 +215,6 @@ router.post('/changepwd', checkUserExists(), (req, res) => {
         status: 'Fail'
       });
     }
-    console.log('1', user)
 
     if (user) {
       bcrypt.compare(req.body.oldPwd, user.password, (err, result) => {
@@ -282,9 +280,7 @@ router.post('/changepwd', checkUserExists(), (req, res) => {
 });
 
 router.post('/assigntraining', checkUserExists(), (req, res) => {
-  console.log(req.body);
   User.findOne({ email: req.body.email }).then(data => {
-    console.log(data);
     if (!data) {
       res.json({
         success: true,
@@ -296,14 +292,13 @@ router.post('/assigntraining', checkUserExists(), (req, res) => {
           'email': req.body.email
         },
         {
-          $set: {
-            'trainingId': req.body.trainingId
+          $push: {
+            'assignedTrainings': ObjectId(req.body.trainingId)
           }
         },
         { upsert: false, multi: false }
       ).then(dataSet => {
-        console.log('*****', dataSet);
-        res.json(data);
+        res.json(dataSet);
       });
     }
   });
